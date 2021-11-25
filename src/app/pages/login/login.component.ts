@@ -1,4 +1,7 @@
 import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { User } from 'src/app/interfaces/user';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -8,12 +11,12 @@ import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
 export class LoginComponent implements OnInit, OnChanges, OnDestroy {
   public text: string = '';
   public isDisabled: boolean = false;
-  public user: any = {
+  public user: User = {
     email: '',
     password: '',
   };
   public error: boolean | string = false;
-  constructor() {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.text = 'TEST';
@@ -23,7 +26,13 @@ export class LoginComponent implements OnInit, OnChanges, OnDestroy {
     this.error = false;
     console.log('LOGIN CLICKED', this.user);
     if (this.validateEmail(this.user.email)) {
-      // O SA APELAM SERVICIUL DE LOGIN
+      this.authService.login(this.user).subscribe((response: any) => {
+        console.log(response);
+        if (response && response.token) {
+          localStorage.setItem('token', response.token);
+          this.router.navigate(['/dashboard']);
+        }
+      });
     } else {
       this.error = 'Email is not valid';
     }
