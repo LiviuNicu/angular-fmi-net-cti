@@ -11,6 +11,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class LoginComponent implements OnInit, OnChanges, OnDestroy {
   public text: string = '';
   public isDisabled: boolean = false;
+  public emailAndPass: string = '';
   public user: User = {
     email: '',
     password: '',
